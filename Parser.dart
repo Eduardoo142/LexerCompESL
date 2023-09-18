@@ -15,6 +15,7 @@ enum Precedence {
   PRODUCT,
   PREFIX,
   CALL,
+  NEGATION,
 }
 
 final Map<TokenType, Precedence> PRECEDENCES = {
@@ -27,6 +28,9 @@ final Map<TokenType, Precedence> PRECEDENCES = {
   TokenType.DIVISION: Precedence.PRODUCT,
   TokenType.MULTIPLICATION: Precedence.PRODUCT,
   TokenType.LPAREN: Precedence.CALL,
+  TokenType.NEGATION: Precedence.NEGATION,
+  TokenType.LTE: Precedence.LESSGREATER,
+  TokenType.GTE: Precedence.LESSGREATER,
 };
 
 class Parser {
@@ -296,6 +300,8 @@ class Parser {
       return Infix(_currentToken!, left, _currentToken!.literal);
     } else if (_currentToken!.token_type == TokenType.NEQ) {
       return Infix(_currentToken!, left, _currentToken!.literal);
+    } else if (_currentToken!.token_type == TokenType.NEGATION) {
+      return Infix(_currentToken!, left, _currentToken!.literal);
     }
 
     infix.right = right;
@@ -348,7 +354,7 @@ class Parser {
     );
 
     _advanceTokens();
-    prefixExpression.right = _parseExpression(Precedence.PREFIX)!;
+    prefixExpression.right = _parseExpression(Precedence.PREFIX);
 
     return prefixExpression;
   }
@@ -391,10 +397,13 @@ class Parser {
       TokenType.DIVISION: (left) => _parseInfixExpression(left),
       TokenType.MULTIPLICATION: (left) => _parseInfixExpression(left),
       TokenType.EQ: (left) => _parseInfixExpression(left),
+      TokenType.NOT_EQ: (left) => _parseInfixExpression(left),
       TokenType.DIF: (left) => _parseInfixExpression(left),
       TokenType.LT: (left) => _parseInfixExpression(left),
       TokenType.GT: (left) => _parseInfixExpression(left),
       TokenType.LPAREN: (left) => _parseCall(left),
+      TokenType.LTE: (left) => _parseInfixExpression(left), 
+      TokenType.GTE: (left) => _parseInfixExpression(left), 
     };
   }
 

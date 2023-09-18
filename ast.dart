@@ -99,12 +99,12 @@ class Integer extends Expression {
 
 class Prefix extends Expression {
   final String operator;
-  late final Expression? right;
+  Expression? right;
 
   Prefix(Token token, this.operator, {this.right}) : super(token);
 
   @override
-  String toString() => '($operator${right.toString()})';
+  String toString() => '($operator$right)';
 }
 
 class Infix extends Expression {

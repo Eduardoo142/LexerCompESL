@@ -8,10 +8,10 @@ final NULL = Null();
 Object _evaluateBangOperatorExpression(Object right) {
   if (right == TRUE) {
     return FALSE;
-  } else if (right == FALSE || right == NULL) {
+  } else if (right == FALSE) {
     return TRUE;
   } else {
-    return FALSE;
+    return NULL;
   }
 }
 
@@ -21,17 +21,19 @@ Object _toBooleanObject(bool value) {
 
 Object _evaluateMinusOperatorExpression(Object right) {
   if (right is Integer) {
-    return NULL;
+    final rightInt = right as Integer;
+    return Integer(-rightInt.value);
   }
-  final rightInt = right as Integer;
-  return Integer(rightInt.value);
-}
+  return NULL; 
+  }
 
 Object _evaluatePrefixExpression(String operator, Object right) {
   if (operator == "!") {
     return _evaluateBangOperatorExpression(right);
   } else if (operator == "-") {
     return _evaluateMinusOperatorExpression(right);
+  } else if (operator == "!") {
+    return _evaluateBangOperatorExpression(right);
   } else {
     return NULL;
   }
@@ -86,6 +88,11 @@ Object _evaluateInfixExpression(String operator, Object left, Object right) {
     return FALSE;
   }
 }
+
+bool _isTruthy(Object obj){
+  return obj != NULL && obj != FALSE;
+}
+
 
 Object? evaluate(ast.ASTNode node) {
   if (node is ast.Program) {
