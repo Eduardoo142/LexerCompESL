@@ -112,7 +112,7 @@ class Infix extends Expression {
   final String operator;
   late final Expression? right;
 
-  Infix(Token token, this.left, this.operator, {this.right}) : super(token);
+  Infix(Token token, this.left, this.operator) : super(token);
 
   @override
   String toString() => '(${left.toString()} $operator ${right.toString()})';

@@ -15,7 +15,7 @@ class Lexer {
 
     if (_match(RegExp(r'^=$'))) {
       if (_peekCharacter() == '=') {
-        final token = _makeTwoCharacterToken(TokenType.EQ as String);
+        final token = _makeTwoCharacterToken(TokenType.EQEQ as String);
         return token;
       } else {
         final token = Token(TokenType.ASSIGN, _character);

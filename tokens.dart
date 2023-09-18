@@ -62,6 +62,10 @@ enum TokenType {
   IDENTIFIER,
   DIF,
   INTEGER,
+  GTE,
+  LTE,
+  EQEQ,
+  NEQ,
 }
 
 class Token {

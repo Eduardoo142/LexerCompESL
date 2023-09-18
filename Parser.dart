@@ -175,6 +175,16 @@ class Parser {
 
         _advanceTokens();
         leftExpression = infixParseFn(leftExpression!);
+
+        if (_currentToken!.token_type == TokenType.GTE) {
+      return _parseInfixExpression(_parseExpression(precedence)!);
+    } else if (_currentToken!.token_type == TokenType.LTE) {
+      return _parseInfixExpression(_parseExpression(precedence)!);
+    } else if (_currentToken!.token_type == TokenType.EQEQ) {
+      return _parseInfixExpression(_parseExpression(precedence)!);
+    } else if (_currentToken!.token_type == TokenType.NEQ) {
+      return _parseInfixExpression(_parseExpression(precedence)!);
+    }
       }
 
       return leftExpression;
@@ -277,6 +287,15 @@ class Parser {
     final right = _parseExpression(precedence);
     if (right == null) {
       return infix;
+    }
+    if (_currentToken!.token_type == TokenType.GTE) {
+      return Infix(_currentToken!, left, _currentToken!.literal);
+    } else if (_currentToken!.token_type == TokenType.LTE) {
+      return Infix(_currentToken!, left, _currentToken!.literal);
+    } else if (_currentToken!.token_type == TokenType.EQEQ) {
+      return Infix(_currentToken!, left, _currentToken!.literal);
+    } else if (_currentToken!.token_type == TokenType.NEQ) {
+      return Infix(_currentToken!, left, _currentToken!.literal);
     }
 
     infix.right = right;
