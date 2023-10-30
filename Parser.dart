@@ -54,7 +54,6 @@ class Parser {
     final program = Program(statements: []);
 
     while (_currentToken!.token_type != TokenType.EOF) {
-      
       final statement = _parseStatement();
 
       if (statement != null) {
@@ -181,14 +180,14 @@ class Parser {
         leftExpression = infixParseFn(leftExpression!);
 
         if (_currentToken!.token_type == TokenType.GTE) {
-      return _parseInfixExpression(_parseExpression(precedence)!);
-    } else if (_currentToken!.token_type == TokenType.LTE) {
-      return _parseInfixExpression(_parseExpression(precedence)!);
-    } else if (_currentToken!.token_type == TokenType.EQEQ) {
-      return _parseInfixExpression(_parseExpression(precedence)!);
-    } else if (_currentToken!.token_type == TokenType.NEQ) {
-      return _parseInfixExpression(_parseExpression(precedence)!);
-    }
+          return _parseInfixExpression(_parseExpression(precedence)!);
+        } else if (_currentToken!.token_type == TokenType.LTE) {
+          return _parseInfixExpression(_parseExpression(precedence)!);
+        } else if (_currentToken!.token_type == TokenType.EQEQ) {
+          return _parseInfixExpression(_parseExpression(precedence)!);
+        } else if (_currentToken!.token_type == TokenType.NEQ) {
+          return _parseInfixExpression(_parseExpression(precedence)!);
+        }
       }
 
       return leftExpression;
@@ -223,8 +222,8 @@ class Parser {
     return expression;
   }
 
-  Funcion? _parseFunction() {
-    late final Funcion function = Funcion(_currentToken!);
+  Functions? _parseFunction() {
+    late final Functions function = Functions(_currentToken!);
 
     if (!_expectedToken(TokenType.LPAREN)) {
       return null;
@@ -325,27 +324,28 @@ class Parser {
   }
 
   LetStatement? _parseLetStatement() {
-    final letStatement = LetStatement(_currentToken!);
+  final letStatement = LetStatement(_currentToken!);
 
-    if (!_expectedToken(TokenType.IDENTIFIER)) {
-      return null;
-    }
-
-    letStatement.name = _parseIdentifier();
-
-    if (!_expectedToken(TokenType.ASSIGN)) {
-      return null;
-    }
-
-    _advanceTokens();
-    letStatement.value = _parseExpression(Precedence.LOWEST);
-
-    if (_peekToken!.token_type == TokenType.SEMICOLON) {
-      _advanceTokens();
-    }
-
-    return letStatement;
+  if (!_expectedToken(TokenType.IDENTIFIER)) {
+    return null;
   }
+
+  letStatement.name = _parseIdentifier();
+
+  if (!_expectedToken(TokenType.ASSIGN)) {
+    return null;
+  }
+
+  _advanceTokens();
+  letStatement.value = _parseExpression(Precedence.LOWEST);
+
+  if (_peekToken!.token_type == TokenType.SEMICOLON) {
+    _advanceTokens();
+  }
+
+  return letStatement;
+}
+
 
   Prefix _parsePrefixExpression() {
     final prefixExpression = Prefix(
@@ -360,16 +360,16 @@ class Parser {
   }
 
   ReturnStatement? _parseReturnStatement() {
-    final returnStatement = ReturnStatement(_currentToken!);
+    _advanceTokens(); // Advance to the next token
 
-    _advanceTokens();
-    returnStatement.returnValue = _parseExpression(Precedence.LOWEST);
+    // Parse the return value expression
+    final returnValue = _parseExpression(Precedence.LOWEST);
 
     if (_peekToken!.token_type == TokenType.SEMICOLON) {
-      _advanceTokens();
+      _advanceTokens(); // Advance past the semicolon
     }
 
-    return returnStatement;
+    return ReturnStatement(_currentToken!, returnValue: returnValue);
   }
 
   Statement? _parseStatement() {
@@ -402,8 +402,8 @@ class Parser {
       TokenType.LT: (left) => _parseInfixExpression(left),
       TokenType.GT: (left) => _parseInfixExpression(left),
       TokenType.LPAREN: (left) => _parseCall(left),
-      TokenType.LTE: (left) => _parseInfixExpression(left), 
-      TokenType.GTE: (left) => _parseInfixExpression(left), 
+      TokenType.LTE: (left) => _parseInfixExpression(left),
+      TokenType.GTE: (left) => _parseInfixExpression(left),
     };
   }
 
@@ -417,6 +417,11 @@ class Parser {
       TokenType.MINUS: () => _parsePrefixExpression(),
       TokenType.NEGATION: () => _parsePrefixExpression(),
       TokenType.TRUE: () => _parseBoolean(),
+      TokenType.STRING: () => _parseString(),
     };
+  }
+
+  Expression _parseString() {
+    return StringLiteral(_currentToken!, value: _currentToken!.literal);
   }
 }

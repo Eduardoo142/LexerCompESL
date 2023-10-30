@@ -67,19 +67,19 @@ class Lexer {
       _readCharacter();
       return token;
     } else if (_match(RegExp(r'^<$'))) {
-      if(_peekCharacter() == '='){
+      if (_peekCharacter() == '=') {
         final token = _makeTwoCharacterToken(TokenType.LTE);
         return token;
-      }else{
+      } else {
         final token = Token(TokenType.LT, _character);
         _readCharacter();
         return token;
       }
     } else if (_match(RegExp(r'^>$'))) {
-      if(_peekCharacter() == '='){
+      if (_peekCharacter() == '=') {
         final token = _makeTwoCharacterToken(TokenType.GTE);
         return token;
-      }else{
+      } else {
         final token = Token(TokenType.GT, _character);
         _readCharacter();
         return token;
@@ -96,10 +96,14 @@ class Lexer {
     } else if (_isLetter(_character)) {
       final literal = _readIdentifier();
       final tokenType = lookupTokenType(literal);
-      return Token(tokenType as TokenType, literal);
+      return Token(tokenType, literal);
     } else if (_isNumber(_character)) {
       final literal = _readNumber();
       return Token(TokenType.INTEGER, literal);
+    } else if (_match(RegExp(r'^"'))) {
+      final literal = _read_string();
+      _readCharacter();
+      return Token(TokenType.STRING, literal);
     } else {
       final token = Token(TokenType.ILLEGAL, _character);
       _readCharacter();
@@ -119,7 +123,7 @@ class Lexer {
     final prefix = _character;
     _readCharacter();
     final suffix = _character;
-    final token = Token(tokenType as TokenType, '$prefix$suffix');
+    final token = Token(tokenType, '$prefix$suffix');
     _readCharacter();
     return token;
   }
@@ -173,5 +177,13 @@ class Lexer {
 
   bool _match(RegExp pattern) {
     return pattern.firstMatch(_character) != null;
+  }
+
+  String _read_string() {
+    final initialPosition = _position + 1;
+    while (_character != '"') {
+      _readCharacter();
+    }
+    return _source.substring(initialPosition, _position);
   }
 }

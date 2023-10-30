@@ -88,6 +88,7 @@ TokenType lookupTokenType(String literal) {
     'regresa': TokenType.RETURN,
     'verdadero': TokenType.TRUE,
     'falso': TokenType.FALSE,
+    'let': TokenType.LET
   };
 
   return keywords[literal] ?? TokenType.IDENTIFIER;

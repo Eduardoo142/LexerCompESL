@@ -168,3 +168,46 @@ class Call extends Expression {
     return '${function.toString()}($argList)';
   }
 }
+
+class Functions extends Expression {
+  late final List<Identifier> parameters;
+  late final Block? body;
+
+  Functions(Token token, {this.parameters = const [], this.body})
+      : super(token);
+
+  @override
+  String toString() {
+    String paramList = parameters.map((param) => param.toString()).join(', ');
+    return '${tokenLiteral()}($paramList) ${body.toString()}';
+  }
+}
+
+class If extends Expression {
+  late final Expression? condition;
+  late final Block? consequence;
+  late final Block? alternative;
+
+  If(Token token, {this.condition, this.consequence, this.alternative})
+      : super(token);
+
+  @override
+  String toString() {
+    var out = 'si ${condition.toString()} ${consequence.toString()}';
+    if (alternative != null) {
+      out += 'si_no ${alternative.toString()}';
+    }
+    return out;
+  }
+}
+
+class StringLiteral extends Expression {
+  String? value;
+
+  StringLiteral(Token token, {this.value}) : super(token);
+
+  @override
+  String toString() {
+    return value.toString();
+  }
+}
