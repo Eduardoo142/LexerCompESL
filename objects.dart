@@ -83,12 +83,11 @@ class Return extends Object {
   }
 }
 
-//Esta clase es la que va a utilizar para guardar las variables
-class Enviroment {
+class Environment {
   Map<String, Object> store = {};
   Map<String, Object> outer = {};
 
-  Enviroment([this.outer = const {}]);
+  Environment([this.outer = const {}]);
 
   dynamic get(String name) {
     try {
@@ -114,7 +113,7 @@ class Enviroment {
 class Functions extends Object {
   List<String> parameters;
   Block body;
-  Enviroment env;
+  Environment env;
 
   Functions(this.parameters, this.body, this.env);
 

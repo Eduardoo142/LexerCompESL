@@ -89,7 +89,7 @@ Object _evaluateInfixExpression(String operator, Object left, Object right) {
   }
 }
 
-Object? evaluate(ast.ASTNode node, [Enviroment? env]) {
+Object? evaluate(ast.ASTNode node, [Environment? env]) {
   if (node is ast.Program) {
     return _evaluate_program(node, env);
   } else if (node is ast.ExpressionStatement) {
@@ -146,7 +146,7 @@ Object? evaluate(ast.ASTNode node, [Enviroment? env]) {
   return NULL;
 }
 
-Object _evaluate_identifier(ast.Identifier node, [Enviroment? env]) {
+Object _evaluate_identifier(ast.Identifier node, [Environment? env]) {
   final value = env?.get(node.value);
   if (value != null) {
     return value;
@@ -154,7 +154,7 @@ Object _evaluate_identifier(ast.Identifier node, [Enviroment? env]) {
   throw Exception('Variable ${node.value} not found in the environment');
 }
 
-Object? _evaluateStatements(List<ast.Statement> statements, [Enviroment? env]) {
+Object? _evaluateStatements(List<ast.Statement> statements, [Environment? env]) {
   Object? result = NULL;
   for (final statement in statements) {
     result = evaluate(statement, env);
@@ -166,7 +166,7 @@ bool _isTruthy(Object obj) {
   return obj != NULL && obj != FALSE;
 }
 
-Object? _evaluateIfExpression(ast.If ifExpression, [Enviroment? env]) {
+Object? _evaluateIfExpression(ast.If ifExpression, [Environment? env]) {
   final condition = evaluate(ifExpression.condition as ast.ASTNode, env);
   if (_isTruthy(condition!)) {
     return _evaluateStatements(ifExpression.consequence!.statements, env);
@@ -176,7 +176,7 @@ Object? _evaluateIfExpression(ast.If ifExpression, [Enviroment? env]) {
   return NULL;
 }
 
-Object? _evaluate_program(ast.Program program, [Enviroment? env]) {
+Object? _evaluate_program(ast.Program program, [Environment? env]) {
   Object? result;
   for (final statement in program.statements) {
     result = evaluate(statement, env);
@@ -189,7 +189,7 @@ Object? _evaluate_program(ast.Program program, [Enviroment? env]) {
 }
 
 
-Object? _evaluate_block_statement(ast.Block block, [Enviroment? env]) {
+Object? _evaluate_block_statement(ast.Block block, [Environment? env]) {
   Object? result;
   for (final statement in block.statements) {
     result = evaluate(statement, env);
@@ -208,7 +208,7 @@ Object _unwrap_Return_Value(Object obj) {
   return obj;
 }
 
-List _evaluate_expression(List expression, [Enviroment? env]) {
+List _evaluate_expression(List expression, [Environment? env]) {
   List resultados = [];
   for (final exp in expression) {
     final evaluated = evaluate(exp, env);
@@ -219,11 +219,11 @@ List _evaluate_expression(List expression, [Enviroment? env]) {
   return resultados;
 }
 
-Enviroment _extend_function_env(
+Environment _extend_function_env(
   Functions fn,
   List<Object> args,
 ) {
-  final env = Enviroment(fn.env.outer);
+  final env = Environment(fn.env.outer);
 
   for (var i = 0; i < fn.parameters.length; i++) {
     env.set(fn.parameters[i], args[i]);
