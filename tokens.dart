@@ -82,7 +82,7 @@ class Token {
 TokenType lookupTokenType(String literal) {
   final keywords = {
     'funcion': TokenType.FUNCTION,
-    'variable': TokenType.LET,
+    'var': TokenType.LET,
     'si': TokenType.IF,
     'si_no': TokenType.ELSE,
     'regresa': TokenType.RETURN,
