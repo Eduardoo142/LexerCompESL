@@ -346,7 +346,38 @@ class Parser {
   return letStatement;
 }
 
+If? _parseIfStatement() {
+  final token = _currentToken!;
 
+  if (!_expectedToken(TokenType.LPAREN)) {
+    return null;
+  }
+
+  _advanceTokens();
+  final condition = _parseExpression(Precedence.LOWEST);
+
+  if (!_expectedToken(TokenType.RPAREN)) {
+    return null;
+  }
+
+  if (!_expectedToken(TokenType.LBRACE)) {
+    return null;
+  }
+
+  final consequence = _parseBlock();
+  Block? alternative;
+  if (_peekToken!.token_type == TokenType.ELSE) {
+    _advanceTokens();
+
+    if (!_expectedToken(TokenType.LBRACE)) {
+      return null;
+    }
+
+    alternative = _parseBlock();
+  }
+
+  return If(token, condition: condition, consequence: consequence, alternative: alternative);
+}
   Prefix _parsePrefixExpression() {
     final prefixExpression = Prefix(
       _currentToken!,
@@ -377,6 +408,8 @@ class Parser {
       return _parseLetStatement();
     } else if (_currentToken!.token_type == TokenType.RETURN) {
       return _parseReturnStatement();
+    } else if (_currentToken!.token_type == TokenType.IF) {
+      return _parseIfStatement();
     } else {
       return _parseExpressionStatement();
     }

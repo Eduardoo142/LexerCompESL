@@ -183,7 +183,7 @@ class Functions extends Expression {
   }
 }
 
-class If extends Expression {
+class If extends Statement {
   late final Expression? condition;
   late final Block? consequence;
   late final Block? alternative;
