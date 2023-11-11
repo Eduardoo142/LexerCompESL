@@ -1,4 +1,5 @@
 import 'tokens.dart';
+import 'objects.dart';
 
 abstract class ASTNode {
   String tokenLiteral();
@@ -96,6 +97,18 @@ class Integer extends Expression {
   @override
   String toString() => value.toString();
 }
+
+class Double extends Expression {
+  double? value;
+
+  Double(Token? token, {double? value}) : super(token!){
+    this.value = value;
+  }
+
+  @override
+  String toString() => value.toString();
+}
+
 
 class Prefix extends Expression {
   final String operator;

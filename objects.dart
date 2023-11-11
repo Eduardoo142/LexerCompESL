@@ -1,10 +1,26 @@
 import 'ast.dart';
 
-enum ObjectType { BOOLEAN, INTEGER, NULL, FLOAT, STRING, RETURN, FUNCTION }
+enum ObjectType { BOOLEAN, INTEGER, NULL, DOUBLE, STRING, RETURN, FUNCTION }
 
 abstract class Object {
   ObjectType type();
   String inspect();
+}
+
+class Double extends Object {
+  double value;
+
+  Double(this.value);
+
+  @override
+  ObjectType type() {
+    return ObjectType.DOUBLE;
+  }
+
+  @override
+  String inspect() {
+    return value.toString();
+  }
 }
 
 class Integer extends Object {
@@ -51,21 +67,6 @@ class Null extends Object {
   }
 }
 
-class Float extends Object {
-  double value;
-
-  Float(this.value);
-
-  @override
-  ObjectType type() {
-    return ObjectType.FLOAT;
-  }
-
-  @override
-  String inspect() {
-    return value.toString();
-  }
-}
 
 class Return extends Object {
   Object value;
@@ -122,10 +123,12 @@ class Functions extends Object {
     return ObjectType.FUNCTION;
   }
 
+
+
   @override
   String inspect() {
     parameters.join(', ');
-    return 'funcion($parameters) {\n${body.toString()}\n}';
+    return 'funcion ($parameters) {\n${body.toString()}\n}';
   }
 }
 

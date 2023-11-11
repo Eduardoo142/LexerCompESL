@@ -99,7 +99,11 @@ class Lexer {
       return Token(tokenType, literal);
     } else if (_isNumber(_character)) {
       final literal = _readNumber();
-      return Token(TokenType.INTEGER, literal);
+      if (literal.contains('.')) {
+        return Token(TokenType.DOUBLE, literal);
+      } else {
+        return Token(TokenType.INTEGER, literal);
+  }
     } else if (_match(RegExp(r'^"'))) {
       final literal = _read_string();
       _readCharacter();
@@ -152,14 +156,14 @@ class Lexer {
   }
 
   String _readNumber() {
-    final initialPosition = _position;
-
-    while (_isNumber(_character)) {
-      _readCharacter();
-    }
-
-    return _source.substring(initialPosition, _position);
+  String result = '';
+  
+  while (_isNumber(_character) || (_character == '.' && _isNumber(_peekCharacter()))) {
+    result += _character;
+    _readCharacter();
   }
+  return result;
+}
 
   String _peekCharacter() {
     if (_readPosition >= _source.length) {
@@ -186,4 +190,11 @@ class Lexer {
     }
     return _source.substring(initialPosition, _position);
   }
+
+}
+
+void main() {
+  final lexer = Lexer('10');
+  final token = lexer.nextToken();
+  print(token);
 }
