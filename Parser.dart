@@ -158,7 +158,10 @@ class Parser {
 
   Expression? _parseExpression(Precedence precedence) {
     try {
-      // print(_prefixParseFns[_currentToken!.token_type]);
+      // final e =_currentToken!.token_type;
+      if (_currentToken!.literal == "" && _peekToken!.token_type == TokenType.STRING){
+        _advanceTokens();
+      }
       final prefixParseFn = _prefixParseFns[_currentToken!.token_type];
       if (prefixParseFn == null) {
         final message =
@@ -166,7 +169,6 @@ class Parser {
         _errors.add(message);
         return null;
       }
-
       var leftExpression = prefixParseFn();
 
       while (_peekToken!.token_type != TokenType.SEMICOLON &&

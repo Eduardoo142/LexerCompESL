@@ -183,13 +183,15 @@ class Lexer {
     return pattern.firstMatch(_character) != null;
   }
 
-  String _read_string() {
-    final initialPosition = _position + 1;
-    while (_character != '"') {
-      _readCharacter();
-    }
-    return _source.substring(initialPosition, _position);
+ String _read_string() {
+  final initialPosition = _position;
+  _readCharacter(); 
+  while (_readPosition < _source.length && _character != '"') {
+    _readCharacter();
   }
+  _readCharacter();
+  return _source.substring(initialPosition + 1, _position - 1); 
+}
 
 }
 
