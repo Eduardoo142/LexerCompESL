@@ -1,4 +1,5 @@
 import 'tokens.dart';
+import 'objects.dart';
 
 abstract class ASTNode {
   String tokenLiteral();
@@ -97,6 +98,18 @@ class Integer extends Expression {
   String toString() => value.toString();
 }
 
+class Double extends Expression {
+  double? value;
+
+  Double(Token? token, {double? value}) : super(token!){
+    this.value = value;
+  }
+
+  @override
+  String toString() => value.toString();
+}
+
+
 class Prefix extends Expression {
   final String operator;
   Expression? right;
@@ -139,19 +152,6 @@ class Block extends Statement {
       out.add(statement.toString());
     }
     return out.join('');
-  }
-}
-
-class Funcion extends Expression {
-  late final List<Identifier> parameters;
-  late final Block? body;
-
-  Funcion(Token token, {this.parameters = const [], this.body}) : super(token);
-
-  @override
-  String toString() {
-    String paramList = parameters.map((param) => param.toString()).join(', ');
-    return '${tokenLiteral()}($paramList) ${body.toString()}';
   }
 }
 
