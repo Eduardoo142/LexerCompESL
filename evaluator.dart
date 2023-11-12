@@ -23,10 +23,11 @@ Object _toBooleanObject(bool value) {
 
 Object _evaluateMinusOperatorExpression(Object right) {
   if (right is Integer) {
-    return NULL;
+    final rightInt = right;
+    return Integer(-rightInt.value);
   }
-  final rightInt = right as Integer;
-  return Integer(rightInt.value);
+  return NULL;
+  
 }
 
 Object _evaluatePrefixExpression(String operator, Object right) {
@@ -102,6 +103,8 @@ Object? evaluate(ast.ASTNode node, [Environment? env]) {
     return _apply_function(function!, args as List<Object>);
   } else if (node is ast.Integer) {
     return Integer(node.value as int);
+  } else if (node is ast.Double) {
+    return Double(node.value as double);
   } else if (node is ast.Boolean) {
     return _toBooleanObject(node.value as bool);
   } else if (node is ast.Prefix) {
@@ -203,7 +206,7 @@ Object? _evaluate_block_statement(ast.Block block, [Environment? env]) {
 
 Object _unwrap_Return_Value(Object obj) {
   if (obj is Return) {
-    return (obj as Return).value;
+    return obj.value;
   }
   return obj;
 }

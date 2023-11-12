@@ -1,4 +1,5 @@
 import 'ast.dart';
+import 'evaluator.dart';
 import 'lexer.dart';
 import 'tokens.dart';
 
@@ -308,6 +309,21 @@ class Parser {
     return infix;
   }
 
+  Double? _parseDouble() {
+    final doubleExpr = Double(_currentToken!);
+    //print(_currentToken!.literal);
+    if (double.tryParse(_currentToken!.literal) != null) {
+      doubleExpr.value = double.parse(_currentToken!.literal);
+    } else {
+      final message =
+          'No se ha podido parsear ${_currentToken!.literal} como double.';
+      _errors.add(message);
+      return null;
+    }
+
+    return doubleExpr;
+  }
+
   Integer? _parseInt() {
     final integer = Integer(_currentToken!);
     // print(_currentToken!.literal);
@@ -338,6 +354,7 @@ class Parser {
 
   _advanceTokens();
   letStatement.value = _parseExpression(Precedence.LOWEST);
+
 
   if (_peekToken!.token_type == TokenType.SEMICOLON) {
     _advanceTokens();
@@ -451,6 +468,8 @@ If? _parseIfStatement() {
       TokenType.NEGATION: () => _parsePrefixExpression(),
       TokenType.TRUE: () => _parseBoolean(),
       TokenType.STRING: () => _parseString(),
+      TokenType.DOUBLE: () => _parseDouble(),
+      
     };
   }
 
@@ -458,3 +477,6 @@ If? _parseIfStatement() {
     return StringLiteral(_currentToken!, value: _currentToken!.literal);
   }
 }
+
+
+
