@@ -92,7 +92,7 @@ class Environment {
 
   dynamic get(String name) {
     try {
-      return store[name];
+      return store[name] ?? outer[name];
     } catch (e) {
       if (outer[name] != null) {
         return outer[name];

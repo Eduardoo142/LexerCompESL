@@ -303,7 +303,7 @@ Environment _extend_function_env(
   Functions fn,
   List<Object> args,
 ) {
-  final env = Environment(fn.env.outer);
+  final env = Environment(fn.env.store);
 
   for (var i = 0; i < fn.parameters.length; i++) {
     env.set(fn.parameters[i], args[i]);
