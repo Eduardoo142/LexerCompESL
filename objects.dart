@@ -128,9 +128,9 @@ class Functions extends Object {
 
   @override
   String inspect() {
-    // String paramList = this.parameters.map((param) => param.toString()).join(', ');
+    String paramList = this.parameters.map((param) => param.toString()).join(', ');
 
-    return 'funcion ${name} (parametros) {\n${body.toString()}\n}';
+    return 'funcion ${name} ($paramList) {\n${body.toString()}\n}';
   }
 }
 

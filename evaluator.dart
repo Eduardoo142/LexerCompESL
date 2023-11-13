@@ -1,4 +1,5 @@
 import 'objects.dart';
+import 'tokens.dart';
 import 'ast.dart' as ast;
 
 final TRUE = Boolean(true);
@@ -159,10 +160,20 @@ Object? evaluate(ast.ASTNode node, [Environment? env]) {
       return evaluate(node.expression!, env);
     }
   } else if (node is ast.Call) {
-    // node.function = env?.get(node.function.value);
+    final temp=env?.get(node.function.token.literal);
+    if(temp is Functions){
+      List<ast.Identifier> identifiers = temp.parameters.map((value) => ast.Identifier(Token(TokenType.IDENTIFIER, value.toString()), value.toString())).toList();
+      final name=ast.Identifier(Token(TokenType.IDENTIFIER, temp.name!.value), temp.name!.value);
+      final fun=ast.Functions(Token(TokenType.FUNCTION, 'funcion'));
+      fun.name=name;
+      fun.parameters=identifiers;
+      fun.body=temp.body;
+      node.function=fun;
+    }
     final function = evaluate(node.function, env);
     final args = _evaluate_expression(node.arguments ?? [], env);
-    return _apply_function(function!, args as List<Object>);
+    List<Object> argsObj = List<Object>.from(args);
+    return _apply_function(function!, argsObj);
   } else if (node is ast.Integer) {
     return Integer(node.value as int);
   } else if (node is ast.Double) {
@@ -204,7 +215,8 @@ Object? evaluate(ast.ASTNode node, [Environment? env]) {
     final name = node.name;
     final parameters = node.parameters;
     final body = node.body;
-    final funcion=Functions(name, parameters.cast<String>(), body!, env!);
+    List<String> identifiersValues = parameters.map((identifier) => identifier.value).toList();
+    final funcion=Functions(name, identifiersValues, body!, env!);
     env.set(node.name!.value, funcion);
     return funcion;
   } else if (node is ast.StringLiteral) {
