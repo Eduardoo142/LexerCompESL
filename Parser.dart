@@ -222,12 +222,19 @@ class Parser {
   }
 
   Functions? _parseFunction() {
-    late final Functions function = Functions(_currentToken!);
+    final Functions function = Functions(_currentToken!);
+
+    if (!_expectedToken(TokenType.IDENTIFIER)) {
+      final message =
+          'La funcion no tiene nombre';
+      _errors.add(message);
+      return null;
+    }
+    function.name=_parseIdentifier();
 
     if (!_expectedToken(TokenType.LPAREN)) {
       return null;
     }
-
     function.parameters = _parseFunctionParameters();
 
     if (!_expectedToken(TokenType.LBRACE)) {

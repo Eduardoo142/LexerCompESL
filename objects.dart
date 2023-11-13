@@ -112,11 +112,12 @@ class Environment {
 }
 
 class Functions extends Object {
+  Identifier? name;
   List<String> parameters;
   Block body;
   Environment env;
 
-  Functions(this.parameters, this.body, this.env);
+  Functions(this.name, this.parameters, this.body, this.env);
 
   @override
   ObjectType type() {
@@ -127,8 +128,9 @@ class Functions extends Object {
 
   @override
   String inspect() {
-    parameters.join(', ');
-    return 'funcion ($parameters) {\n${body.toString()}\n}';
+    // String paramList = this.parameters.map((param) => param.toString()).join(', ');
+
+    return 'funcion ${name} (parametros) {\n${body.toString()}\n}';
   }
 }
 

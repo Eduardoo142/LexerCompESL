@@ -159,6 +159,7 @@ Object? evaluate(ast.ASTNode node, [Environment? env]) {
       return evaluate(node.expression!, env);
     }
   } else if (node is ast.Call) {
+    // node.function = env?.get(node.function.value);
     final function = evaluate(node.function, env);
     final args = _evaluate_expression(node.arguments ?? [], env);
     return _apply_function(function!, args as List<Object>);
@@ -200,9 +201,12 @@ Object? evaluate(ast.ASTNode node, [Environment? env]) {
   } else if (node is ast.Identifier) {
     return _evaluate_identifier(node, env);
   } else if (node is ast.Functions) {
+    final name = node.name;
     final parameters = node.parameters;
     final body = node.body;
-    return Functions(parameters.cast<String>(), body!, env!);
+    final funcion=Functions(name, parameters.cast<String>(), body!, env!);
+    env.set(node.name!.value, funcion);
+    return funcion;
   } else if (node is ast.StringLiteral) {
     return StringObject(node.value as String);
   }

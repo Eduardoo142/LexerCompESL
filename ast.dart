@@ -170,15 +170,17 @@ class Call extends Expression {
 }
 
 class Functions extends Expression {
-  late final List<Identifier> parameters;
-  late final Block? body;
-
-  Functions(Token token, {this.parameters = const [], this.body})
-      : super(token);
-
+  Identifier? name;
+  List<Identifier> parameters;
+  Block? body;
+ 
+  Functions(Token token, {Identifier? name, List<Identifier>? parameters, this.body})
+      : parameters = parameters ?? [],
+        super(token);
+ 
   @override
   String toString() {
-    String paramList = parameters.map((param) => param.toString()).join(', ');
+    String paramList = parameters.map((param) => param.value).join(', ');
     return '${tokenLiteral()}($paramList) ${body.toString()}';
   }
 }
