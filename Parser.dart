@@ -108,7 +108,6 @@ class Parser {
       if (statement != null) {
         blockStatement.statements.add(statement);
       }
-
       _advanceTokens();
     }
 
@@ -158,7 +157,7 @@ class Parser {
 
   Expression? _parseExpression(Precedence precedence) {
     try {
-      // print(_prefixParseFns[_currentToken!.token_type]);
+      // final e =_currentToken!.token_type;
       final prefixParseFn = _prefixParseFns[_currentToken!.token_type];
       if (prefixParseFn == null) {
         final message =
@@ -166,7 +165,6 @@ class Parser {
         _errors.add(message);
         return null;
       }
-
       var leftExpression = prefixParseFn();
 
       while (_peekToken!.token_type != TokenType.SEMICOLON &&
@@ -363,7 +361,38 @@ class Parser {
   return letStatement;
 }
 
+If? _parseIfStatement() {
+  final token = _currentToken!;
 
+  if (!_expectedToken(TokenType.LPAREN)) {
+    return null;
+  }
+
+  _advanceTokens();
+  final condition = _parseExpression(Precedence.LOWEST);
+
+  if (!_expectedToken(TokenType.RPAREN)) {
+    return null;
+  }
+
+  if (!_expectedToken(TokenType.LBRACE)) {
+    return null;
+  }
+
+  final consequence = _parseBlock();
+  Block? alternative;
+  if (_peekToken!.token_type == TokenType.ELSE) {
+    _advanceTokens();
+
+    if (!_expectedToken(TokenType.LBRACE)) {
+      return null;
+    }
+
+    alternative = _parseBlock();
+  }
+
+  return If(token, condition: condition, consequence: consequence, alternative: alternative);
+}
   Prefix _parsePrefixExpression() {
     final prefixExpression = Prefix(
       _currentToken!,
@@ -394,6 +423,8 @@ class Parser {
       return _parseLetStatement();
     } else if (_currentToken!.token_type == TokenType.RETURN) {
       return _parseReturnStatement();
+    } else if (_currentToken!.token_type == TokenType.IF) {
+      return _parseIfStatement();
     } else {
       return _parseExpressionStatement();
     }
@@ -444,6 +475,3 @@ class Parser {
     return StringLiteral(_currentToken!, value: _currentToken!.literal);
   }
 }
-
-
-

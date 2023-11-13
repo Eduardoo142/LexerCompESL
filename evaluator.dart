@@ -39,6 +39,43 @@ Object _evaluatePrefixExpression(String operator, Object right) {
     return NULL;
   }
 }
+Object? _evaluateDoubleInfixExpression(
+  String operator,
+  Object left,
+  Object right,
+) {
+  if (left is! Double || right is! Double) {
+    return NULL;
+  }
+
+  final leftInt = left;
+  final rightInt = right;
+
+  switch (operator) {
+    case "+":
+      return Double(leftInt.value + rightInt.value);
+    case "-":
+      return Double(leftInt.value - rightInt.value);
+    case "*":
+      return Double(leftInt.value * rightInt.value);
+    case "/":
+      return Double(leftInt.value / rightInt.value);
+    case "<":
+      return _toBooleanObject(leftInt.value < rightInt.value);
+    case "<=":
+      return _toBooleanObject(leftInt.value <= rightInt.value);
+    case ">":
+      return _toBooleanObject(leftInt.value > rightInt.value);
+    case ">=":
+      return _toBooleanObject(leftInt.value >= rightInt.value);
+    case "==":
+      return _toBooleanObject(leftInt.value == rightInt.value);
+    case "!=":
+      return _toBooleanObject(leftInt.value != rightInt.value);
+    default:
+      return NULL;
+  }
+}
 
 Object? _evaluateIntegerInfixExpression(
   String operator,
@@ -78,9 +115,33 @@ Object? _evaluateIntegerInfixExpression(
   }
 }
 
+Object? _evaluate_string_infix_expression(
+  String operator,
+  Object left,
+  Object right,
+) {
+  if (left is StringObject && right is StringObject) {
+    switch (operator) {
+      case "+":
+        return StringObject('${left.value}${right.value}');
+      case "==":
+        return _toBooleanObject(left.value == right.value);
+      case "!=":
+        return _toBooleanObject(left.value != right.value);
+      default:
+        return NULL;
+    }
+  }
+  return NULL;
+}
+
 Object _evaluateInfixExpression(String operator, Object left, Object right) {
   if (left.type() == ObjectType.INTEGER && right.type() == ObjectType.INTEGER) {
     return _evaluateIntegerInfixExpression(operator, left, right) ?? NULL;
+  } else if (left.type() == ObjectType.DOUBLE || right.type() == ObjectType.DOUBLE) {
+    return _evaluateDoubleInfixExpression(operator, left, right) ?? NULL;
+  } else if (left.type() == ObjectType.STRING || right.type() == ObjectType.STRING) {
+    return _evaluate_string_infix_expression(operator, left, right) ?? NULL;
   } else if (operator == "==" && left == right) {
     return TRUE;
   } else if (operator == "!=" && left != right) {
