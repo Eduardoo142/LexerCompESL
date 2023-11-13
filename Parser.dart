@@ -108,7 +108,6 @@ class Parser {
       if (statement != null) {
         blockStatement.statements.add(statement);
       }
-
       _advanceTokens();
     }
 
@@ -159,9 +158,6 @@ class Parser {
   Expression? _parseExpression(Precedence precedence) {
     try {
       // final e =_currentToken!.token_type;
-      if (_currentToken!.literal == "" && _peekToken!.token_type == TokenType.STRING){
-        _advanceTokens();
-      }
       final prefixParseFn = _prefixParseFns[_currentToken!.token_type];
       if (prefixParseFn == null) {
         final message =
@@ -479,6 +475,3 @@ If? _parseIfStatement() {
     return StringLiteral(_currentToken!, value: _currentToken!.literal);
   }
 }
-
-
-

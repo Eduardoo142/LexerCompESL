@@ -106,7 +106,6 @@ class Lexer {
   }
     } else if (_match(RegExp(r'^"'))) {
       final literal = _read_string();
-      _readCharacter();
       return Token(TokenType.STRING, literal);
     } else {
       final token = Token(TokenType.ILLEGAL, _character);
@@ -190,6 +189,7 @@ class Lexer {
     _readCharacter();
   }
   _readCharacter();
+  final result = _source.substring(initialPosition + 1, _position - 1);
   return _source.substring(initialPosition + 1, _position - 1); 
 }
 
